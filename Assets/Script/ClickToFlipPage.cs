@@ -18,6 +18,20 @@ namespace vivian
 
         [SerializeField] private bool isFlipped = false;
         
+        [SerializeField] private Sprite spriteBeforeFlip; // default sprite
+        [SerializeField] private Sprite spriteAfterFlip;  // flipped sprite
+        
+        // scrolling
+        public CameraScroll cameraScroll;
+        
+        [SerializeField] private GameObject letterScrollContainer;
+        public float scrollSpeed = 5f;
+        public float minY = -2f;
+        public float maxY = 2f;
+        
+        // regenerating the collider
+        private BoxCollider2D letterCollider;
+        
         // Start is called before the first frame update
         void Start()
         {
@@ -25,12 +39,21 @@ namespace vivian
             
             originalPosition = transform.position;
             originalSortingOrder = spriteRenderer.sortingOrder;
+            
+            letterCollider = GetComponent<BoxCollider2D>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            
+            if (isFlipped) {
+                float scroll = Input.GetAxis("Mouse ScrollWheel");
+                if (scroll != 0f) {
+                    Vector3 pos = letterScrollContainer.transform.localPosition;
+                    pos.y = Mathf.Clamp(pos.y + scroll * scrollSpeed, minY, maxY);
+                    letterScrollContainer.transform.localPosition = pos;
+                }
+            }
         }
 
         private void OnMouseUp()
@@ -38,29 +61,41 @@ namespace vivian
             if (!isFlipped)
             {
                 Debug.Log("to the front");
+                
+                // stop major scrolling
+                cameraScroll.isLetterActive = true;
+                letterCollider.size = new Vector2(17.8882f, 60f);
+                
+                Vector3 targetPosition = new Vector3(originalPosition.x, -211f, originalPosition.z);
+                Vector3 slideOutFrom = targetPosition + new Vector3(slideDistance, 0f, 0f);
                     
                 StartCoroutine(SlideAndFade(
-                    originalPosition,
-                    originalPosition + new Vector3(slideDistance, 0f, 0f),
+                    slideOutFrom,
+                    targetPosition + new Vector3(slideDistance, 0f, 0f),
                     1f, 0f,
                     () => {
                             
                         // bring to front
+                        spriteRenderer.sprite = spriteAfterFlip;
+
                         spriteRenderer.sortingOrder += 10;
                         StartCoroutine(SlideAndFade(
-                            originalPosition + new Vector3(slideDistance, 0f, 0f),
-                            originalPosition,
+                            targetPosition + new Vector3(slideDistance, 0f, 0f),
+                            targetPosition,
                             0f, 1f,
                             null
                         ));
                             
                     }
                 ));
-                    
+                
                 isFlipped = !isFlipped;
             }
             else
             {
+                cameraScroll.isLetterActive = false;
+                letterCollider.size = new Vector2(17.8882f, 36f);
+                
                 Debug.Log("set to back");
                     
                 StartCoroutine(SlideAndFade(
@@ -70,6 +105,8 @@ namespace vivian
                     () => {
                             
                         // back to original sorting order
+                        spriteRenderer.sprite = spriteBeforeFlip;
+
                         spriteRenderer.sortingOrder = originalSortingOrder;
                         StartCoroutine(SlideAndFade(
                             originalPosition + new Vector3(slideDistance, 0f, 0f),

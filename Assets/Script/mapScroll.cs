@@ -10,14 +10,21 @@ public class CameraScroll : MonoBehaviour
     public float topLimit;
     public float bottomLimit;
 
+    // letter scrolling
+    public bool isLetterActive = false;
+    
     private void Start()
     {
         topLimit = 0f;
         bottomLimit = -(canvasBase.transform.localScale.y - 10f);
+        
+        isLetterActive = false;
     }
 
     void Update()
     {
+        if (isLetterActive) return;
+        
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 		Debug.Log(scroll);
 		// If the scroll value is positive, scroll up
