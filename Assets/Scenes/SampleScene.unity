@@ -228,7 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d62a3517014ce45febf7127884a30ff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollSpeed: 8
+  scrollSpeed: 7
   canvasBase: {fileID: 1093627772}
   topLimit: 0
   bottomLimit: 0
@@ -3318,7 +3318,7 @@ MonoBehaviour:
   spriteAfterFlip: {fileID: 21300000, guid: 37b1cf088038eb747bf3ecd48af59b57, type: 3}
   cameraScroll: {fileID: 519420033}
   letterScrollContainer: {fileID: 1973609975}
-  scrollSpeed: 5
+  scrollSpeed: 3
   minY: -211
   maxY: -162.4
 --- !u!61 &1973609980
