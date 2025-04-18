@@ -1,8 +1,20 @@
+using System;
 using UnityEngine;
 
 public class CameraScroll : MonoBehaviour
 {
     public float scrollSpeed = 5f;
+
+    public GameObject canvasBase;
+    
+    public float topLimit;
+    public float bottomLimit;
+
+    private void Start()
+    {
+        topLimit = 0f;
+        bottomLimit = -(canvasBase.transform.localScale.y - 10f);
+    }
 
     void Update()
     {
@@ -13,6 +25,15 @@ public class CameraScroll : MonoBehaviour
         if (scroll != 0f)
         {
             transform.position += Vector3.down * scroll * scrollSpeed;
+            
+            // clamping
+            float clampedY = Mathf.Clamp(transform.position.y, bottomLimit, topLimit);
+            
+            transform.position = new Vector3(
+                transform.position.x,
+                clampedY,
+                transform.position.z
+            );
         }
     }
 }
