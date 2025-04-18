@@ -42,5 +42,10 @@ public class CameraScroll : MonoBehaviour
                 transform.position.z
             );
         }
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 }
